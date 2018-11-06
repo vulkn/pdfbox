@@ -66,7 +66,7 @@ import org.apache.pdfbox.pdmodel.graphics.blend.BlendMode;
 /**
  * Processes a PDF content stream and executes certain operations.
  * Provides a callback interface for clients that want to do things with the stream.
- * 
+ *
  * @author Ben Litchfield
  */
 public abstract class PDFStreamEngine
@@ -94,7 +94,7 @@ public abstract class PDFStreamEngine
 
     /**
      * Register a custom operator processor with the engine.
-     * 
+     *
      * @param operator The operator as a string.
      * @param op Processor instance.
      * @deprecated Use {@link #addOperator(OperatorProcessor)} instead
@@ -184,9 +184,9 @@ public abstract class PDFStreamEngine
 
     /**
      * Processes a soft mask transparency group stream.
-     * 
+     *
      * @param group the transparency group.
-     * 
+     *
      * @throws IOException
      */
     protected void processSoftMask(PDTransparencyGroup group) throws IOException
@@ -200,9 +200,9 @@ public abstract class PDFStreamEngine
 
     /**
      * Processes a transparency group stream.
-     * 
+     *
      * @param group the transparency group.
-     * 
+     *
      * @throws IOException
      */
     protected void processTransparencyGroup(PDTransparencyGroup group) throws IOException
@@ -215,7 +215,7 @@ public abstract class PDFStreamEngine
 
         PDResources parent = pushResources(group);
         Stack<PDGraphicsState> savedStack = saveGraphicsStack();
-        
+
         Matrix parentMatrix = initialMatrix;
 
         // the stream's initial matrix includes the parent CTM, e.g. this allows a scaled form
@@ -224,8 +224,8 @@ public abstract class PDFStreamEngine
         // transform the CTM using the stream's matrix
         getGraphicsState().getCurrentTransformationMatrix().concatenate(group.getMatrix());
 
-        // Before execution of the transparency group XObject’s content stream, 
-        // the current blend mode in the graphics state shall be initialized to Normal, 
+        // Before execution of the transparency group XObject’s content stream,
+        // the current blend mode in the graphics state shall be initialized to Normal,
         // the current stroking and nonstroking alpha constants to 1.0, and the current soft mask to None.
         getGraphicsState().setBlendMode(BlendMode.NORMAL);
         getGraphicsState().setAlphaConstant(1);
@@ -236,7 +236,7 @@ public abstract class PDFStreamEngine
         clipToRect(group.getBBox());
 
         processStreamOperators(group);
-        
+
         initialMatrix = parentMatrix;
 
         restoreGraphicsStack(savedStack);
@@ -320,7 +320,7 @@ public abstract class PDFStreamEngine
             // Matrix shall be concatenated with A to form a matrix AA that maps from the appearance's
             // coordinate system to the annotation's rectangle in default user space
             //
-            // HOWEVER only the opposite order works for rotated pages with 
+            // HOWEVER only the opposite order works for rotated pages with
             // filled fields / annotations that have a matrix in the appearance stream, see PDFBOX-3083
             Matrix aa = Matrix.concatenate(a, matrix);
 
@@ -335,7 +335,7 @@ public abstract class PDFStreamEngine
 
             processStreamOperators(appearance);
         }
-        
+
         restoreGraphicsStack(savedStack);
         popResources(parent);
     }
@@ -437,7 +437,7 @@ public abstract class PDFStreamEngine
      *
      * @param contentStream the child content stream
      * @param page the current page
-     * 
+     *
      * @throws IOException if there is an exception while processing the stream
      */
     protected void processChildStream(PDContentStream contentStream, PDPage page) throws IOException
@@ -651,7 +651,7 @@ public abstract class PDFStreamEngine
      *
      * @param tx x-translation
      * @param ty y-translation
-     * 
+     *
      * @throws IOException if something went wrong
      */
     protected void applyTextAdjustment(float tx, float ty) throws IOException
@@ -818,7 +818,7 @@ public abstract class PDFStreamEngine
 
     /**
      * This is used to handle an operation.
-     * 
+     *
      * @param operation The operation to perform.
      * @param arguments The list of arguments.
      * @throws IOException If there is an error processing the operation.
@@ -831,7 +831,7 @@ public abstract class PDFStreamEngine
 
     /**
      * This is used to handle an operation.
-     * 
+     *
      * @param operator The operation to perform.
      * @param operands The list of arguments.
      * @throws IOException If there is an error processing the operation.
@@ -863,7 +863,7 @@ public abstract class PDFStreamEngine
      *
      * @param operator The unknown operator.
      * @param operands The list of operands.
-     * 
+     *
      * @throws IOException if something went wrong
      */
     protected void unsupportedOperator(Operator operator, List<COSBase> operands) throws IOException
@@ -877,7 +877,7 @@ public abstract class PDFStreamEngine
      * @param operator The unknown operator.
      * @param operands The list of operands.
      * @param e the thrown exception.
-     * 
+     *
      * @throws IOException if something went wrong
      */
     protected void operatorException(Operator operator, List<COSBase> operands, IOException e)
@@ -887,17 +887,17 @@ public abstract class PDFStreamEngine
             e instanceof MissingResourceException ||
             e instanceof MissingImageReaderException)
         {
-            LOG.error(e.getMessage());
+            LOG.error("Receive an exception with message: " + e.getMessage(), e);
         }
         else if (e instanceof EmptyGraphicsStackException)
         {
-            LOG.warn(e.getMessage());
+            LOG.warn("Receive an exception with message: " + e.getMessage(), e);
         }
         else if (operator.getName().equals("Do"))
         {
             // todo: this too forgiving, but PDFBox has always worked this way for DrawObject
             //       some careful refactoring is needed
-            LOG.warn(e.getMessage());
+            LOG.warn("Operator is Do. Received an exception with message: " + e.getMessage(), e);
         }
         else
         {
@@ -923,7 +923,7 @@ public abstract class PDFStreamEngine
 
     /**
      * Saves the entire graphics stack.
-     * 
+     *
      * @return the saved graphics state stack.
      */
     protected final Stack<PDGraphicsState> saveGraphicsStack()
@@ -936,14 +936,14 @@ public abstract class PDFStreamEngine
 
     /**
      * Restores the entire graphics stack.
-     * 
+     *
      * @param snapshot the graphics state stack to be restored.
      */
     protected final void restoreGraphicsStack(Stack<PDGraphicsState> snapshot)
     {
         graphicsStack = snapshot;
     }
-    
+
     /**
      * @return Returns the size of the graphicsStack.
      */
@@ -1026,7 +1026,7 @@ public abstract class PDFStreamEngine
 
     /**
      * Gets the stream's initial matrix.
-     * 
+     *
      * @return the initial matrix.
      */
     public Matrix getInitialMatrix()
@@ -1036,10 +1036,10 @@ public abstract class PDFStreamEngine
 
     /**
      * Transforms a point using the CTM.
-     * 
+     *
      * @param x x-coordinate of the point to be transformed.
      * @param y y-coordinate of the point to be transformed.
-     * 
+     *
      * @return the transformed point.
      */
     public Point2D.Float transformedPoint(float x, float y)
@@ -1052,9 +1052,9 @@ public abstract class PDFStreamEngine
 
     /**
      * Transforms a width using the CTM.
-     * 
+     *
      * @param width the width value to be transformed.
-     * 
+     *
      * @return the transformed width value.
      */
     protected float transformWidth(float width)

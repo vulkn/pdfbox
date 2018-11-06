@@ -144,7 +144,7 @@ public final class PDICCBased extends PDCIEBasedColorSpace
             // if the embedded profile is sRGB then we can use Java's built-in profile, which
             // results in a large performance gain as it's our native color space, see PDFBOX-2587
             ICC_Profile profile;
-            synchronized (LOG)
+            synchronized (this)
             {
                 profile = ICC_Profile.getInstance(input);
                 if (is_sRGB(profile))
@@ -175,7 +175,7 @@ public final class PDICCBased extends PDCIEBasedColorSpace
                 // this one triggers an exception for PDFBOX-3549 with KCMS
                 new Color(awtColorSpace, new float[getNumberOfComponents()], 1f);
                 // PDFBOX-4015: this one triggers "CMMException: LCMS error 13" with LCMS
-                new ComponentColorModel(awtColorSpace, false, false, 
+                new ComponentColorModel(awtColorSpace, false, false,
                                         Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
             }
         }
@@ -495,7 +495,7 @@ public final class PDICCBased extends PDCIEBasedColorSpace
         rangeArray.set(n*2, new COSFloat(range.getMin()));
         rangeArray.set(n*2+1, new COSFloat(range.getMax()));
     }
-    
+
     /**
      * Sets the metadata stream that is associated with this color space.
      * @param metadata the new metadata stream
