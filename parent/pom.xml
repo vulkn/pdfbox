@@ -460,4 +460,12 @@
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/pom/tags/2.0.12/pdfbox-parent</developerConnection>
     <url>http://svn.apache.org/viewvc/maven/pom/tags/2.0.12/pdfbox-parent</url>
   </scm>
+
+  <distributionManagement>
+    <repository>
+        <id>linkedin-pdfbox-fork</id>
+        <url>https://linkedin.jfrog.io/linkedin/pdfbox-fork</url>
+    </repository>
+  </distributionManagement>
+
 </project>
